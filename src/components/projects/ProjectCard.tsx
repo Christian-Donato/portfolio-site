@@ -48,14 +48,20 @@ export function ProjectCard({
             {project.period ? ` · ${project.period}` : ""}
           </p>
         ) : null}
-        <p className="mt-3 text-sm leading-6 text-muted">
-          <span className="font-medium text-ink-soft">Problem. </span>
-          {project.problem}
-        </p>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          <span className="font-medium text-ink-soft">Outcome. </span>
-          {project.outcome}
-        </p>
+        {project.blurb ? (
+          <p className="mt-3 text-sm leading-6 text-muted">{project.blurb}</p>
+        ) : (
+          <>
+            <p className="mt-3 text-sm leading-6 text-muted">
+              <span className="font-medium text-ink-soft">Problem. </span>
+              {project.problem}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              <span className="font-medium text-ink-soft">Outcome. </span>
+              {project.outcome}
+            </p>
+          </>
+        )}
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {project.tools.map((tool) => (
             <li key={tool}>

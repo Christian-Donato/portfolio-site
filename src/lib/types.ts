@@ -1,8 +1,8 @@
 export const projectCategories = [
-  "Data Analysis",
-  "Business Analysis",
-  "Business Intelligence",
   "Systems / Technology",
+  "Business Analysis",
+  "Data Analysis",
+  "Business Intelligence",
 ] as const;
 
 export type ProjectCategory = (typeof projectCategories)[number];
@@ -13,7 +13,9 @@ export type ProjectPreview =
   | "finance"
   | "rpa"
   | "network"
-  | "foodhub";
+  | "foodhub"
+  | "streaming"
+  | "dossier";
 
 export type ProjectOrigin = "professional" | "university" | "personal";
 
@@ -107,6 +109,8 @@ export type Project = {
   period?: string;
   problem: string;
   outcome: string;
+  /** When set, the project card shows this instead of the problem/outcome pair. */
+  blurb?: string;
   tools: string[];
   skills: string[];
   deliverables: string[];

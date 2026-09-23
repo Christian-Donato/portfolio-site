@@ -267,6 +267,106 @@ export function FoodHubPreview() {
   );
 }
 
+export function StreamingPreview() {
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full" aria-hidden="true">
+      <rect width="640" height="360" className="fill-surface-2" />
+      <rect x="20" y="18" width="160" height="10" rx="2" className="fill-ink/20" />
+      <rect x="20" y="36" width="220" height="7" rx="2" className="fill-ink/10" />
+      {[
+        { x: 20, v: "Invite", l: "Accounts" },
+        { x: 172, v: "206", l: "Range stream" },
+        { x: 324, v: "2–6", l: "Watch room" },
+        { x: 476, v: "RLS", l: "Postgres" },
+      ].map((k) => (
+        <g key={k.l} transform={`translate(${k.x} 64)`}>
+          <rect width="144" height="72" rx="8" className="fill-surface stroke-line" />
+          <text x="14" y="24" className="fill-muted" fontSize="10">
+            {k.l}
+          </text>
+          <text x="14" y="52" className="fill-ink" fontSize="22" fontFamily="ui-serif, Georgia, serif">
+            {k.v}
+          </text>
+        </g>
+      ))}
+      <rect x="20" y="156" width="392" height="184" rx="8" className="fill-surface stroke-line" />
+      <text x="36" y="180" className="fill-ink/70" fontSize="11">
+        Catalog on disk · metadata from TMDB
+      </text>
+      {[0, 1, 2, 3].map((i) => (
+        <rect
+          key={i}
+          x={36 + i * 90}
+          y="200"
+          width="78"
+          height="112"
+          rx="6"
+          className={i === 0 ? "fill-accent" : "fill-accent-soft"}
+        />
+      ))}
+      <rect x="428" y="156" width="192" height="184" rx="8" className="fill-ink" />
+      <text x="444" y="184" className="fill-paper/70" fontSize="11">
+        Player
+      </text>
+      <rect x="444" y="248" width="160" height="6" rx="3" className="fill-paper/20" />
+      <rect x="444" y="248" width="72" height="6" rx="3" className="fill-accent" />
+      <text x="444" y="278" className="fill-paper/80" fontSize="11">
+        Seek via byte range
+      </text>
+    </svg>
+  );
+}
+
+export function DossierPreview() {
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full" aria-hidden="true">
+      <rect width="640" height="360" className="fill-surface-2" />
+      <rect x="20" y="18" width="180" height="10" rx="2" className="fill-ink/20" />
+      <rect x="20" y="36" width="240" height="7" rx="2" className="fill-ink/10" />
+      {[
+        { x: 20, v: "<30s", l: "Briefing" },
+        { x: 172, v: "3", l: "Sources" },
+        { x: 324, v: "Print", l: "Dossier" },
+        { x: 476, v: "Mock", l: "Demo mode" },
+      ].map((k) => (
+        <g key={k.l} transform={`translate(${k.x} 64)`}>
+          <rect width="144" height="72" rx="8" className="fill-surface stroke-line" />
+          <text x="14" y="24" className="fill-muted" fontSize="10">
+            {k.l}
+          </text>
+          <text x="14" y="52" className="fill-ink" fontSize="22" fontFamily="ui-serif, Georgia, serif">
+            {k.v}
+          </text>
+        </g>
+      ))}
+      <rect x="20" y="156" width="292" height="184" rx="8" className="fill-surface stroke-line" />
+      <text x="36" y="180" className="fill-ink/70" fontSize="11">
+        Today’s meetings
+      </text>
+      {["10:00 · Client A", "13:30 · Client B", "16:00 · Client C"].map((row, i) => (
+        <g key={row}>
+          <rect x="36" y={196 + i * 40} width="260" height="32" rx="6" className="fill-paper-deep" />
+          <text x="48" y={216 + i * 40} className="fill-ink" fontSize="12">
+            {row}
+          </text>
+        </g>
+      ))}
+      <rect x="328" y="156" width="292" height="184" rx="8" className="fill-surface stroke-line" />
+      <text x="344" y="180" className="fill-ink/70" fontSize="11">
+        Client dossier
+      </text>
+      {["Pulse", "Risks", "Opener", "Email tags"].map((row, i) => (
+        <g key={row}>
+          <rect x="344" y={196 + i * 32} width="260" height="26" rx="4" className="fill-accent-soft" />
+          <text x="356" y={214 + i * 32} className="fill-accent-ink" fontSize="12">
+            {row}
+          </text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 export function ProjectPreview({
   type,
   fit = "cover",
@@ -279,5 +379,7 @@ export function ProjectPreview({
   if (type === "rpa") return <RpaPreview />;
   if (type === "network") return <NetworkPreview />;
   if (type === "foodhub") return <FoodHubPreview />;
+  if (type === "streaming") return <StreamingPreview />;
+  if (type === "dossier") return <DossierPreview />;
   return <WorkflowPreview />;
 }

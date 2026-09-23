@@ -329,6 +329,625 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "dossiergen",
+    title: "DossierGen — client briefing for coaches",
+    category: "Systems / Technology",
+    featured: false,
+    origin: "personal",
+    org: "Personal project · solo full-stack",
+    problem:
+      "Coaches and consultants lose prep time bouncing between Stripe, Gmail, and Calendar before every call. A general chat tool still needs a new prompt each time.",
+    outcome:
+      "DossierGen turns a client email into a printable meeting briefing — billing, recent emails, calendar context, and AI insights — in under 30 seconds.",
+    blurb:
+      "Coaches and consultants lose prep time bouncing between Stripe, Gmail, and Calendar before every call. DossierGen connects those sources into one structured Client Dossier: relationship pulse, risks, prep tips, a suggested opener, and tagged email threads — ready to print. Built as a full-stack Next.js product with auth, OAuth, live APIs, and a mock mode so demos cost nothing.",
+    tools: [
+      "Next.js",
+      "TypeScript",
+      "Clerk",
+      "Stripe",
+      "Gmail",
+      "Google Calendar",
+      "Gemini",
+      "Tailwind",
+    ],
+    skills: [
+      "Full-stack product systems",
+      "OAuth and third-party APIs",
+      "Requirements Gathering",
+      "Process Improvement",
+    ],
+    deliverables: [
+      "Printable client dossier",
+      "Today’s meetings",
+      "Mock / live data modes",
+      "Per-user Google OAuth",
+    ],
+    preview: "dossier",
+    links: {},
+    caseStudy: {
+      problem:
+        "Help coaches walk into every client meeting briefed, without prompt-engineering a chatbot or opening five tabs five minutes before the call. Billing, inbox, and calendar each hold a piece of the relationship. Prep is last-minute and inconsistent, and a general AI tool still needs a fresh prompt every time.",
+      objective: [
+        "Can one search, or one click from today’s calendar, assemble billing, email, and meeting context?",
+        "What should the briefing contain so a coach can use it without rewriting a prompt?",
+        "How do you demo Stripe, Gmail, and Calendar without paying for live API calls every time?",
+        "How does each coach connect their own Google account without sharing one token?",
+        "How does the next briefing show what changed since the last session?",
+      ],
+      dataContext:
+        "Solo full-stack build. DossierGen is a B2B SaaS MVP for coaches and consultants. A user enters a client email, or opens today’s Google Calendar meetings and generates from there. The dossier pulls Stripe billing, Gmail threads, calendar context, and a Gemini briefing. Google OAuth is per user: Gmail and Calendar refresh tokens live in Clerk metadata. Mock mode uses demo personas so a walkthrough does not spend API quota. Live mode hits the real integrations. No customer count or revenue figure is claimed.",
+      approach: [
+        "Productize the workflow: enter an email, or click a meeting, and receive a structured dossier.",
+        "Keep a data layer that routes Stripe, Gmail, Calendar, and Gemini through the same mock or live switch.",
+        "Store each coach’s Google refresh token on their Clerk user, with one OAuth consent for Gmail and Calendar.",
+        "Ask Gemini for structured JSON — pulse, risks, prep tips, opener, and email tags — rather than a free-form chat transcript.",
+        "Save dossier history and a diff against the previous briefing.",
+        "Print the briefing with print CSS and a watermark. Put connect, disconnect, and API status in settings.",
+      ],
+      tools: [
+        "Next.js 16",
+        "TypeScript",
+        "React 19",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Framer Motion",
+        "Clerk",
+        "Stripe",
+        "Gmail API",
+        "Google Calendar API",
+        "Google Gemini",
+        "googleapis",
+      ],
+      analysis: [
+        {
+          question: "What was scattered, and what does one dossier replace?",
+          insight:
+            "Before a call the useful facts sit in three products: what the client pays (Stripe), what they wrote (Gmail), and when you are meeting (Calendar). Coaches were assembling that by hand, or pasting it into a chatbot with a new prompt each time. DossierGen makes the assembly the product. Search by email, or generate from today’s meetings. The output is a briefing: relationship pulse, risks, prep tips, a suggested opener, and email threads tagged billing, at-risk, scheduling, and similar.",
+          action:
+            "Ship the briefing, not a blank chat box. The coach should not have to remember the prompt.",
+          chart: {
+            type: "table",
+            caption: "Problem and the product response",
+            headers: ["Problem", "What DossierGen does"],
+            rows: [
+              [
+                "Context is scattered across billing, inbox, and calendar",
+                "One search, or one click from today’s meetings",
+              ],
+              [
+                "Prep is last-minute and inconsistent",
+                "Structured briefing: pulse, risks, tips, opener",
+              ],
+              [
+                "General AI tools need a new prompt every time",
+                "Enter an email and receive a dossier",
+              ],
+              [
+                "Live APIs are expensive to demo",
+                "Mock / live toggle with demo personas",
+              ],
+            ],
+          },
+        },
+        {
+          question: "What does a coach actually open?",
+          insight:
+            "The public site tells the product story. Clerk handles sign-in, and middleware protects the app. The dashboard shows today’s meetings and the dossier search. Settings hold the mock/live switch, Google connect and disconnect, and API status. The dossier itself is a printable card: pulse, opener, risks, tips, and a thread list with tags. History keeps prior briefings and a diff of what changed.",
+          action:
+            "Treat print, empty states, and settings as part of the product. A generate button without a briefing you can hand someone is unfinished.",
+          chart: {
+            type: "table",
+            caption: "Product surfaces",
+            headers: ["Surface", "What it does"],
+            rows: [
+              ["Landing", "Public marketing site and product story"],
+              ["Auth", "Clerk sign-in and sign-up; protected routes in middleware"],
+              ["Dashboard", "Today’s meetings plus dossier search and generate"],
+              ["Dossier", "Printable briefing, email tags, history, and diff"],
+              ["Settings", "Mock/live toggle, Google connect/disconnect, API status"],
+            ],
+          },
+        },
+        {
+          question: "How do mock demos and live accounts share one pipeline?",
+          insight:
+            "Stripe, Gmail, Calendar, and Gemini sit behind a data layer. Mock mode returns rich demo personas. Live mode calls the APIs. The dossier route, today’s calendar route, Gmail OAuth, and a status route stay the same either way. That split is what makes a sales demo cheap and a connected coach real. Gemini is asked for structured JSON so the UI can place pulse, risks, tips, and tags in fixed slots.",
+          action:
+            "Switch data sources, not screens. Keep the briefing schema stable across mock and live.",
+          chart: {
+            type: "table",
+            caption: "Architecture",
+            headers: ["Layer", "What it does"],
+            rows: [
+              ["Landing", "Marketing site"],
+              ["Auth", "Clerk; protected routes via middleware"],
+              ["API", "/api/dossier, /api/calendar/today, Gmail OAuth, /api/status"],
+              ["Data layer", "Mock versus live for Stripe, Gmail, Calendar, and Gemini"],
+              ["OAuth", "Unified Google scopes; per-user refresh tokens in Clerk metadata"],
+            ],
+          },
+        },
+        {
+          question: "Who owns the Google token?",
+          insight:
+            "Gmail and Calendar are the coach’s accounts, not a single app-wide login. One Google OAuth consent covers both scopes. The refresh token is stored on that Clerk user. Disconnect lives in settings. Another coach cannot read the first coach’s inbox because the token is not global.",
+          action:
+            "Keep third-party tokens on the user. Do not demo live Gmail from one shared refresh token.",
+          chart: {
+            type: "kpi",
+            items: [
+              { label: "Identity", value: "Clerk", hint: "Per coach" },
+              { label: "Google", value: "Gmail + Calendar", hint: "One consent" },
+              { label: "Billing context", value: "Stripe", hint: "Live or mock" },
+              { label: "Briefing", value: "Gemini JSON", hint: "Fixed sections" },
+            ],
+          },
+        },
+      ],
+      findings: [
+        "The job is meeting prep. The product is a dossier with a stable shape, not a chat window.",
+        "Stripe, Gmail, and Calendar only help if they arrive together, tied to one client email or one calendar event.",
+        "Mock and live can share the UI when the data layer is the only switch.",
+        "Per-user Google tokens are what make this multi-coach. A shared inbox token would not.",
+        "History and a diff answer the follow-up question: what changed since last time.",
+      ],
+      recommendations: [
+        {
+          title: "Keep the briefing schema fixed",
+          detail:
+            "Pulse, risks, tips, opener, and tags are the contract. A longer model response should still land in those fields.",
+        },
+        {
+          title: "Demo in mock, connect in live",
+          detail:
+            "Use personas when showing the product. Turn on live Stripe and Google only for a coach who has connected their own account.",
+        },
+        {
+          title: "Generate from the calendar when the day is already booked",
+          detail:
+            "Search by email covers ad-hoc prep. Today’s meetings cover the common case: the call is already on the calendar.",
+        },
+        {
+          title: "Show the delta before the call",
+          detail:
+            "A second dossier is more useful when it highlights what changed since the last briefing, not only when it repeats the file.",
+        },
+      ],
+      impact:
+        "Designed and shipped a complete B2B MVP: auth, OAuth, multi-API orchestration, an AI briefing pipeline, and a mock/live architecture. A coach can go from a client email or today’s meeting to a printable briefing. No production customer count or time-saved metric is claimed. The “under 30 seconds” line is the product target for generation, not a measured study.",
+      reflection:
+        "If I extended this, I would add a short acceptance check on the Gemini JSON (missing pulse, empty risks) and a clearer settings state when Google is connected but a scope is missing. I would keep mock mode in front of every demo so a walkthrough does not depend on live quota.",
+      stakeholders: [
+        {
+          name: "Coach or consultant",
+          interest: "Walk into the call already briefed",
+          influence: "High",
+          need: "One printable dossier from the tools they already pay for",
+        },
+        {
+          name: "Client (indirect)",
+          interest: "A meeting that reflects the recent emails and the account",
+          influence: "Low",
+          need: "They never see the product; the briefing has to be accurate",
+        },
+        {
+          name: "The builder (demo)",
+          interest: "Show the full flow without API cost",
+          influence: "Medium",
+          need: "Mock personas that still exercise the same UI",
+        },
+      ],
+      requirements: [
+        {
+          id: "DG-F-01",
+          type: "Functional",
+          statement:
+            "A signed-in user must generate a client dossier from an email address, combining billing, recent email, and calendar context.",
+          priority: "Must",
+        },
+        {
+          id: "DG-F-02",
+          type: "Functional",
+          statement:
+            "The dashboard must list today’s client meetings and generate a dossier in one click.",
+          priority: "Must",
+        },
+        {
+          id: "DG-F-03",
+          type: "Functional",
+          statement:
+            "The briefing must include relationship pulse, risks, prep tips, a suggested opener, and tagged email threads, and it must print cleanly.",
+          priority: "Must",
+        },
+        {
+          id: "DG-F-04",
+          type: "Functional",
+          statement:
+            "Dossier history must show a diff against the previous briefing for that client.",
+          priority: "Should",
+        },
+        {
+          id: "DG-NF-01",
+          type: "Non-functional",
+          statement:
+            "Routes behind the dashboard must require Clerk auth. Google refresh tokens must be stored per user.",
+          priority: "Must",
+        },
+        {
+          id: "DG-NF-02",
+          type: "Non-functional",
+          statement:
+            "Mock mode must serve demo personas through the same dossier shape as live Stripe, Gmail, Calendar, and Gemini calls.",
+          priority: "Must",
+        },
+        {
+          id: "DG-D-01",
+          type: "Data",
+          statement:
+            "Gemini output is structured JSON mapped onto the briefing fields. Email threads keep source tags such as billing, at-risk, and scheduling.",
+          priority: "Must",
+        },
+      ],
+    },
+  },
+  {
+    slug: "after-hours",
+    title: "After Hours — private home streaming with co-watch",
+    category: "Systems / Technology",
+    featured: false,
+    origin: "personal",
+    org: "Personal project",
+    problem:
+      "Commercial streaming is a catalog you rent. After Hours asks the opposite: how do you give a small circle of people a polished, authenticated, remote-capable player for media that already lives on one computer, without uploading the library to the cloud?",
+    outcome:
+      "A full-stack, invite-only streaming platform for a personal media library. Files stay on a home machine; a React client, Node streaming server, and Supabase handle catalog, auth, playback, co-watch, and profiles.",
+    blurb:
+      "A full-stack, invite-only streaming platform for a personal media library. Files stay on a home machine; a React client, Node streaming server, and Supabase handle catalog, auth, playback, co-watch, and profiles. Built to behave like a real product: HTTP range streaming, JWT-gated APIs, Postgres RLS, and WebRTC in the room.",
+    tools: [
+      "React",
+      "TypeScript",
+      "Node",
+      "Express",
+      "Supabase",
+      "Postgres",
+      "WebRTC",
+      "Cloudflare Tunnel",
+    ],
+    skills: [
+      "Full-stack product systems",
+      "API Integration & Testing",
+      "Requirements Gathering",
+      "Information Systems Design",
+    ],
+    deliverables: [
+      "Invite-only catalog and player",
+      "HTTP range streaming",
+      "Watch rooms and co-watch",
+      "Postgres RLS and shop",
+    ],
+    preview: "streaming",
+    links: {},
+    caseStudy: {
+      problem:
+        "Commercial streaming is a catalog you rent. After Hours asks the opposite: how do you give a small circle of people a polished, authenticated, remote-capable player for media that already lives on one computer, without uploading the library to the cloud? It is a private, invite-only home streaming app. The host PC holds the files. Invited people get a Netflix-style UI, synced watch rooms, and accounts. It is a personal viewing tool. It does not claim rights to the catalog and it is not a public service.",
+      objective: [
+        "How do invited people get a polished player for files that stay on one home machine?",
+        "What is the source of truth for video bytes, and what is the source of truth for people, lists, progress, and rooms?",
+        "How do you seek a large file without loading the whole movie, and how do you authenticate a stream when the video element cannot set headers?",
+        "How do two to six people stay in sync in a room, including camera and mic, without a public chat?",
+        "How do tickets and cosmetic unlocks stay honest if the client cannot be trusted to subtract a balance?",
+      ],
+      dataContext:
+        "This is my own product. Friends and family use manually created accounts. There is no public signup. Landing copy is explicit: personal viewing, not redistribution. I owned the UX, media delivery, auth, realtime, and a small in-app economy. Video lives on local disk (D:/Movies plus personal uploads). People and state live in Supabase: auth, profiles, lists, progress, rooms, and the shop. An Express server scans the library, enriches titles via TMDB, and streams bytes with HTTP range requests. A Cloudflare tunnel can expose a HTTPS URL while the host PC is on. The production path lists the library from a disk cache — tens of titles in the current setup — and rebuilds that cache in the background after TMDB enrichment. The host PC has to be on. This is not infinitely scalable SaaS. The shared library is browser-compatible MP4, not a transcode farm. Quick Cloudflare URLs change unless a named tunnel is set. The catalog is a private collection. The app does not sell or publicly distribute titles.",
+      approach: [
+        "Keep bytes on disk and people in Postgres. Do not upload the library to a CDN.",
+        "Serve the catalog, subtitles, and /api/stream from Express, with Supabase JWTs required in production.",
+        "Enrich titles from TMDB into a local JSON cache so browsing is not a live metadata call on every row.",
+        "Cache the disk scan so listing the library is not a full walk on every request.",
+        "Sync watch rooms on Supabase Realtime. Carry camera and mic on a WebRTC mesh, with signaling over that same channel.",
+        "Put ticket spend and cosmetic unlocks in security-definer SQL, not in the client.",
+        "In production, serve the built React app from the same Node process. In dev, split Vite and the API.",
+      ],
+      tools: [
+        "TypeScript",
+        "JavaScript",
+        "SQL",
+        "React 18",
+        "React Router 7",
+        "Vite 6",
+        "Tailwind 4",
+        "Radix UI",
+        "Node",
+        "Express",
+        "Supabase Auth",
+        "Postgres RLS",
+        "Supabase Realtime",
+        "WebRTC",
+        "TMDB",
+        "Cloudflare Tunnel",
+        "PowerShell",
+      ],
+      sqlSnippets: [
+        {
+          title: "Runtime shape",
+          caption:
+            "Production can serve the built frontend from the same Node process. Dev can split Vite on 5173 and the API on 3001.",
+          code: `[React + Vite SPA]
+    → Supabase Auth / Postgres / Realtime
+    → Express on :3001 (JWT on APIs + /api/stream)
+         → local .mp4 files (range / 206)
+         → TMDB (cached metadata)
+[Optional] Cloudflare Tunnel → https://… → localhost:3001`,
+        },
+      ],
+      analysis: [
+        {
+          question: "Where does a title actually live?",
+          insight:
+            "The product is the split. A movie file stays on the host disk. The account, the list, the resume point, the room, and the shop live in Supabase. Express is the glue: it scans the library, caches the scan, asks TMDB for posters and descriptions, and streams the bytes. Uploads are personal MP4s with an optional SRT and custom title or art. They are not mixed blindly into the shared family catalog.",
+          action:
+            "Treat disk as the media store and Postgres as the product store. Do not collapse them into one cloud bucket.",
+          chart: {
+            type: "table",
+            caption: "Two sources of truth",
+            headers: ["Store", "Holds", "Does not hold"],
+            rows: [
+              [
+                "Local disk",
+                "Shared library and personal uploads",
+                "Accounts, progress, rooms, shop balances",
+              ],
+              [
+                "Supabase",
+                "Auth, profiles, lists, progress, rooms, shop",
+                "The video bytes",
+              ],
+              [
+                "Express",
+                "Scan, TMDB cache, range stream, JWT gate",
+                "A second copy of the catalog in the cloud",
+              ],
+            ],
+          },
+        },
+        {
+          question: "What can an invited person actually do?",
+          insight:
+            "The UI is a small product, not a file browser. Home and Browse are a catalog grid with search, posters, ratings, and descriptions. A title page has an HTML5 player, seek, sidecar SRT converted to WebVTT, and episodes or chapters where the files exist. Cast pages come from TMDB and link back to titles in this library. My List and resume position start in local storage and merge into the account on login. Watch rooms are 2–6 people, invite code, host-driven playback, and no public chat. Co-watch adds camera and mic, a spatial-ish audio pan, voice activity, and a reactions overlay. The Lounge is a cosmetic shop: avatars, frames, banners, status lines, reactions, and a ticket wallet.",
+          action:
+            "Keep each surface tied to either the file, the account, or the room. Do not add a public feed.",
+          chart: {
+            type: "table",
+            caption: "Product surfaces",
+            headers: ["Area", "What it does"],
+            rows: [
+              ["Home / Browse", "Catalog grid and rows; search; TMDB posters, ratings, descriptions"],
+              ["Title + player", "Detail page, HTML5 player, byte-range seek, SRT to WebVTT, episodes or chapters"],
+              ["Cast", "Person pages and in-library links, from TMDB"],
+              ["My List + progress", "Saved titles and resume position; local storage merged on login"],
+              ["Uploads", "Personal MP4s, optional SRT, custom title and art; kept out of the shared catalog"],
+              ["Watch rooms", "2–6 people, invite code, host-driven sync, no public chat"],
+              ["Co-watch", "Camera and mic, audio pan, voice activity, reactions overlay"],
+              ["Lounge", "Avatars, frames, banners, status lines, reactions, ticket wallet"],
+              ["Auth", "Email and password only; accounts created in the Supabase dashboard"],
+            ],
+          },
+        },
+        {
+          question: "How do you seek a large file without uploading it?",
+          insight:
+            "The player is a normal HTML5 video element pointed at /api/stream. Seeking sends an HTTP Range request. The server answers 206 with Content-Range and only the requested bytes. That is what makes a long file feel like a streaming app instead of a download. Subtitles ride alongside as SRT converted to WebVTT. Listing does not walk the disk on every request: libraryCache keeps a scan, and TMDB enrichment refreshes it in the background.",
+          action:
+            "Stream ranges from the host. Cache the catalog. Leave the master file where it already is.",
+          chart: {
+            type: "kpi",
+            items: [
+              { label: "Playback", value: "HTTP 206", hint: "Range / Content-Range" },
+              { label: "Catalog", value: "Disk cache", hint: "Tens of titles" },
+              { label: "Metadata", value: "TMDB", hint: "Cached JSON" },
+              { label: "Refresh", value: "Background", hint: "After enrichment" },
+            ],
+          },
+        },
+        {
+          question: "How do you lock a stream when the video tag cannot set headers?",
+          insight:
+            "JSON APIs can require Authorization: Bearer. A video element cannot. Production runs with REQUIRE_AUTH, and the server verifies Supabase JWTs. /api/stream accepts the bearer header or an access_token query param so the player can still be gated. Ownership checks decide who can watch a shared title versus a personal upload. Row Level Security on Postgres means a member only sees rooms they belong to.",
+          action:
+            "Authenticate the bytes, not only the JSON. Pass the session token in the one place the video element allows.",
+          chart: {
+            type: "table",
+            caption: "Auth on media versus auth on data",
+            headers: ["Surface", "Gate", "Why it is shaped that way"],
+            rows: [
+              ["JSON APIs", "Authorization: Bearer", "Normal JWT check in server/auth.js"],
+              ["/api/stream", "Bearer or access_token", "The video element cannot set headers"],
+              ["Personal uploads", "Ownership check", "A private file is not a family title"],
+              ["Watch rooms", "Postgres RLS", "You only read rooms you belong to"],
+              ["Accounts", "Supabase dashboard", "Invite-only; no public signup"],
+            ],
+          },
+        },
+        {
+          question: "How does a room stay in sync, and why is the shop not in the client?",
+          insight:
+            "Playback sync is host-driven over Supabase Realtime: a host clock, a drift threshold of about 2.5 seconds, membership, and expiry. Camera and mic are a WebRTC mesh. Offers, answers, and ICE go over Realtime. Transceivers carry audio and video. Mute, push-to-talk, and speaking indicators sit on top. The Lounge cannot trust the browser to subtract tickets. purchase_shop_item is security-definer SQL. New auth users get a profile from a trigger. Tables cover profiles, my list, watch progress, purchases and ownership, rooms and members, unlocks, shop items, and equipped avatar, frame, banner, and status.",
+          action:
+            "Sync from the host. Spend currency in the database. Keep chat out of the room.",
+          chart: {
+            type: "table",
+            caption: "Modules worth naming",
+            headers: ["Module", "Job"],
+            rows: [
+              ["server.js", "Catalog, range streaming, subtitles, health"],
+              ["server/auth.js", "JWT gate"],
+              ["server/libraryCache.js", "Scan and cache so listing is not a full disk walk"],
+              ["server/ownershipCheck.js", "Who can watch which title"],
+              ["server/uploadRoutes.js / userLibrary.js", "Personal library"],
+              ["server/castRoutes.js + tmdb.js", "Enrichment and cast"],
+              ["supabase/migrations/", "Profiles, lists, progress, rooms, shop, cosmetics"],
+            ],
+          },
+        },
+      ],
+      findings: [
+        "The product is a split store: disk for bytes, Supabase for people and state, Express in between.",
+        "Range responses are what make seek work on a home file. A full-file download would not.",
+        "Protecting /api/stream is a different problem from protecting JSON, because the video element cannot set headers.",
+        "Co-watch is host clock, a ~2.5s drift threshold, room membership, and a WebRTC mesh. It is not a public chat.",
+        "Tickets and unlocks belong in security-definer SQL. A client-side balance is not a balance.",
+        "A Cloudflare tunnel gives family a HTTPS URL without putting videos on a CDN. The host PC still has to be on.",
+      ],
+      recommendations: [
+        {
+          title: "Keep the library on the host",
+          detail:
+            "Do not upload the collection to object storage to make the player simpler. The point of the product is that the files stay where they already are.",
+        },
+        {
+          title: "Use a named tunnel when the circle is stable",
+          detail:
+            "Quick Cloudflare URLs change. A named tunnel is the operating fix once the same people are coming back.",
+        },
+        {
+          title: "Leave transcoding out of this version",
+          detail:
+            "Browser-compatible MP4 is the contract for the shared library. A transcode farm is a different product.",
+        },
+        {
+          title: "Keep signup in the dashboard",
+          detail:
+            "Invite-only is the access model. A public registration form would turn a household player into a distribution service.",
+        },
+      ],
+      impact:
+        "Invited people can browse, resume, upload a personal file, and sit in a small watch room while the host PC is on. The library is listed from a disk cache of tens of titles and refreshed in the background after TMDB enrichment. No public audience, no catalog rights, and no CDN copy of the files are claimed.",
+      reflection:
+        "The constraints are the design. The host has to be awake. The shared library has to already play in a browser. A quick tunnel URL is temporary unless it is named. I would keep those limits visible in the product rather than paper over them with a cloud upload. If I extended it, I would add a named tunnel and a clearer ownership label on personal uploads versus the family catalog, and I would leave the shop spend path in SQL.",
+      stakeholders: [
+        {
+          name: "Invited friends and family",
+          interest: "A polished player for a shared library, plus a private upload",
+          influence: "High",
+          need: "An account that already exists, resume, and a room they were invited to",
+        },
+        {
+          name: "Host (me)",
+          interest: "The PC stays the media store; the circle stays small",
+          influence: "High",
+          need: "The machine on, a tunnel when people are remote, and no public signup",
+        },
+        {
+          name: "Supabase",
+          interest: "Auth, Postgres, and Realtime for state that is not a video file",
+          influence: "Medium",
+          need: "RLS and a profile trigger so the client is not the authority",
+        },
+      ],
+      currentProcess: [
+        {
+          id: "C1",
+          title: "Files on one PC",
+          actor: "Host",
+          detail: "The library already lives on disk.",
+          pain: "A folder is not a player, a resume point, or an invite.",
+        },
+        {
+          id: "C2",
+          title: "Ad-hoc sharing",
+          actor: "Friends and family",
+          detail: "Watching together means a link, a download, or sitting in the same room.",
+          pain: "No account, no sync, no sense of who is allowed to press play.",
+        },
+      ],
+      futureProcess: [
+        {
+          id: "F1",
+          title: "Account exists",
+          actor: "Host via Supabase",
+          detail: "An invite is a dashboard user, not a public signup.",
+        },
+        {
+          id: "F2",
+          title: "Browse and play",
+          actor: "Member",
+          detail: "The SPA reads catalog state from Supabase and bytes from Express range responses.",
+        },
+        {
+          id: "F3",
+          title: "Room",
+          actor: "Host and 1–5 guests",
+          detail: "Invite code, host clock, WebRTC for camera and mic.",
+        },
+        {
+          id: "F4",
+          title: "Resume and list",
+          actor: "Member",
+          detail: "Local progress merges into the account on login.",
+        },
+      ],
+      requirements: [
+        {
+          id: "AH-F-01",
+          type: "Functional",
+          statement:
+            "Invited users must browse a catalog enriched from TMDB and play a title with seek, without the file being uploaded to a CDN.",
+          priority: "Must",
+        },
+        {
+          id: "AH-F-02",
+          type: "Functional",
+          statement:
+            "The player must seek via HTTP range requests and show sidecar subtitles converted from SRT to WebVTT.",
+          priority: "Must",
+        },
+        {
+          id: "AH-F-03",
+          type: "Functional",
+          statement:
+            "A member must save titles and resume position, including a merge from local storage on login.",
+          priority: "Must",
+        },
+        {
+          id: "AH-F-04",
+          type: "Functional",
+          statement:
+            "Personal uploads must stay out of the shared family catalog unless explicitly treated as shared.",
+          priority: "Must",
+        },
+        {
+          id: "AH-F-05",
+          type: "Functional",
+          statement:
+            "A watch room must support 2–6 people, an invite code, and host-driven playback sync, with no public chat.",
+          priority: "Must",
+        },
+        {
+          id: "AH-NF-01",
+          type: "Non-functional",
+          statement:
+            "Production APIs and /api/stream must verify Supabase JWTs. The stream may accept a bearer header or access_token.",
+          priority: "Must",
+        },
+        {
+          id: "AH-NF-02",
+          type: "Non-functional",
+          statement:
+            "Room membership and shop balances must be enforced in Postgres (RLS and security-definer SQL), not only in the client.",
+          priority: "Must",
+        },
+        {
+          id: "AH-D-01",
+          type: "Data",
+          statement:
+            "Profiles, lists, progress, purchases, rooms, members, unlocks, and equipped cosmetics live in Postgres. A new auth user receives a profile from a trigger. Video bytes stay on disk.",
+          priority: "Must",
+        },
+      ],
+    },
+  },
+  {
     slug: "finance-wrapped",
     title: "Finance Wrapped — HomePlanner Open Banking MVP",
     category: "Data Analysis",

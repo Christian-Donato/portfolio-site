@@ -23,6 +23,9 @@ export default function ProjectsPage() {
         <div className="mt-10 space-y-12">
           {projectCategories.map((category) => {
             const items = projects.filter((project) => project.category === category);
+            items.sort(
+              (a, b) => Number(a.origin !== "personal") - Number(b.origin !== "personal"),
+            );
             if (!items.length) return null;
             return (
               <section key={category} aria-labelledby={category}>
